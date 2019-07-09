@@ -14,12 +14,11 @@
 ### git学习文档：
 #### 1.[Github简明教程](https://www.runoob.com/w3cnote/git-guide.html)
 #### 2.[Git官方文档](https://git-scm.com/book/zh/v2)
-<<<<<<< HEAD
 
 
 
 ### Markdown基本语法：
-(```)
+```
 # 这是一级标题
 ## 这是二级标题
 ### 这是三级标题
@@ -77,6 +76,4 @@ title可加可不加
 
 单行代码：
 `代码内容`
-(```)
-=======
->>>>>>> 4b2f30e3d89d9b870283ba567a5e7178a9e5a84d
+```
